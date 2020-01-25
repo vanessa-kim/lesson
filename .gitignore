@@ -1,0 +1,6 @@
+**/sessions/
+**/data/
+**/file/
+**/dist/
+**/node_modules/
+.vscode
