@@ -1,29 +1,39 @@
 const main = document.querySelector('main');
-// page 엘리먼트에 해당하는 래퍼 div만 남기고, 헤더영역과 콘텐츠영역으로 마크업 분리
-// 기준은 API에서 내려오는 데이터를 기본으로 하되, 필요시 UI도 적절히 고려하여 설계
+
 main.innerHTML = /*html*/`
     <div class="v9tJq VfzDr">
     </div>
 `;
 let page = main.firstElementChild;
-// 템플릿리터럴의 HTML코드를 파싱하여 DOM 생성, first 자식으로 엘리먼트 추가 (prepend)
+
+// 헤더영역 데이터 분리 - 마크업에서 데이터를 분리하여, 재사용 가능한 템플릿으로 만듦
+// 기준은 API에서 내려오는 데이터를 기본으로 하되, 필요시 UI도 적절히 고려하여 설계
+let profile = {
+    name: 'twicetagram',
+    img: 'https://it-crafts.github.io/lesson/img/profile.jpg',
+    title: 'TWICE',
+    text: 'TWICE OFFICIAL INSTAGRAM<br>^-^',
+    post: '2,010',
+    follower: '11,543,431',
+    follow: '25',
+};
 page.insertAdjacentHTML('afterbegin', /*html*/`
-    <header class=" HVbuG">
+    <header class="HVbuG">
         <div class="XjzKX">
             <div class="RR-M- h5uC0" role="button" tabindex="0">
                 <canvas class="CfWVH" height="91" width="91" style="position: absolute; top: -7px; left: -7px; width: 91px; height: 91px;"></canvas>
-                <span class="_2dbep" role="link" tabindex="0" style="width: 77px; height: 77px;"><img alt="twicetagram님의 프로필 사진" class="_6q-tv" src="https://it-crafts.github.io/lesson/img/profile.jpg"></span>
+                <span class="_2dbep" role="link" tabindex="0" style="width: 77px; height: 77px;"><img alt="${profile.name}님의 프로필 사진" class="_6q-tv" src="${profile.img}"></span>
             </div>
         </div>
         <section class="zwlfE">
             <div class="nZSzR">
-                <h1 class="_7UhW9 fKFbl yUEEX KV-D4 fDxYl">twicetagram</h1>
+                <h1 class="_7UhW9 fKFbl yUEEX KV-D4 fDxYl">${profile.name}</h1>
                 <span class="mrEK_ Szr5J coreSpriteVerifiedBadge" title="인증됨">인증됨</span>
                 <div class="AFWDX"><button class="dCJp8 afkep"><span aria-label="옵션" class="glyphsSpriteMore_horizontal__outline__24__grey_9 u-__7"></span></button></div>
             </div>
             <div class="Y2E37">
-                <div class=" Igw0E IwRSH eGOV_ vwCYk">
-                    <span class=" ffKix bqE32">
+                <div class="Igw0E IwRSH eGOV_ vwCYk">
+                    <span class="ffKix bqE32">
                         <span class="vBF20 _1OSdk"><button class="_5f5mN jIbKX _6VtSN yZn4P">팔로우</button></span>
                         <span class="mLCHD _1OSdk"><button class="_5f5mN jIbKX KUBKM yZn4P"><div class="OfoBO"><div class="_5fEvj coreSpriteDropdownArrowWhite"></div></div></button></span>
                     </span>
@@ -32,12 +42,12 @@ page.insertAdjacentHTML('afterbegin', /*html*/`
         </section>
     </header>
     <div class="-vDIg">
-        <h1 class="rhpdm">TWICE</h1><br><span>TWICE OFFICIAL INSTAGRAM<br>^-^</span>
+        <h1 class="rhpdm">${profile.title}</h1><br><span>${profile.text}</span>
     </div>
     <ul class="_3dEHb">
-        <li class="LH36I"><span class="_81NM2">게시물 <span class="g47SY lOXF2">2,010</span></span></li>
-        <li class="LH36I"><a class="_81NM2" href="javascript:;">팔로워 <span class="g47SY lOXF2" title="11,543,431">11.5백만</span></a></li>
-        <li class="LH36I"><a class="_81NM2" href="javascript:;">팔로우 <span class="g47SY lOXF2">25</span></a></li></ul>
+        <li class="LH36I"><span class="_81NM2">게시물 <span class="g47SY lOXF2">${profile.post}</span></span></li>
+        <li class="LH36I"><a class="_81NM2" href="javascript:;">팔로워 <span class="g47SY lOXF2" title="${profile.follower}">${profile.follower}</span></a></li>
+        <li class="LH36I"><a class="_81NM2" href="javascript:;">팔로우 <span class="g47SY lOXF2">${profile.follow}</span></a></li></ul>
     </ul>
     <div class="fx7hk">
         <a class="_9VEo1 T-jvg" href="javascript:;" data-type="grid"><span aria-label="게시물" class="glyphsSpritePhoto_grid__outline__24__blue_5 u-__7"></span></a>
@@ -45,7 +55,7 @@ page.insertAdjacentHTML('afterbegin', /*html*/`
         <a class="_9VEo1" href="javascript:;" data-type=""><span aria-label="태그됨" class="glyphsSpriteTag_up__outline__24__grey_5 u-__7"></span></a>
     </div>
 `);
-// 템플릿리터럴의 HTML코드를 파싱하여 DOM 생성, last 자식으로 엘리먼트 추가 (append)
+
 page.insertAdjacentHTML('beforeend', /*html*/`
     <div class="_2z6nI">
         <div style="flex-direction: column;">
