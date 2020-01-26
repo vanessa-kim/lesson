@@ -6,7 +6,7 @@ main.innerHTML = /*html*/`
 `;
 let page = main.firstElementChild;
 
-let profile = {
+let profileData = {
     name: 'twicetagram',
     img: 'https://it-crafts.github.io/lesson/img/profile.jpg',
     title: 'TWICE',
@@ -30,12 +30,12 @@ page.insertAdjacentHTML('afterbegin', /*html*/`
         <div class="XjzKX">
             <div class="RR-M- h5uC0" role="button" tabindex="0">
                 <canvas class="CfWVH" height="91" width="91" style="position: absolute; top: -7px; left: -7px; width: 91px; height: 91px;"></canvas>
-                <span class="_2dbep" role="link" tabindex="0" style="width: 77px; height: 77px;"><img alt="${profile.name}님의 프로필 사진" class="_6q-tv" src="${profile.img}"></span>
+                <span class="_2dbep" role="link" tabindex="0" style="width: 77px; height: 77px;"><img alt="${profileData.name}님의 프로필 사진" class="_6q-tv" src="${profileData.img}"></span>
             </div>
         </div>
         <section class="zwlfE">
             <div class="nZSzR">
-                <h1 class="_7UhW9 fKFbl yUEEX KV-D4 fDxYl">${profile.name}</h1>
+                <h1 class="_7UhW9 fKFbl yUEEX KV-D4 fDxYl">${profileData.name}</h1>
                 <span class="mrEK_ Szr5J coreSpriteVerifiedBadge" title="인증됨">인증됨</span>
                 <div class="AFWDX"><button class="dCJp8 afkep"><span aria-label="옵션" class="glyphsSpriteMore_horizontal__outline__24__grey_9 u-__7"></span></button></div>
             </div>
@@ -50,12 +50,12 @@ page.insertAdjacentHTML('afterbegin', /*html*/`
         </section>
     </header>
     <div class="-vDIg">
-        <h1 class="rhpdm">${profile.title}</h1><br><span>${profile.text}</span>
+        <h1 class="rhpdm">${profileData.title}</h1><br><span>${profileData.text}</span>
     </div>
     <ul class="_3dEHb">
-        <li class="LH36I"><span class="_81NM2">게시물 <span class="g47SY lOXF2">${profile.post}</span></span></li>
-        <li class="LH36I"><a class="_81NM2" href="javascript:;">팔로워 <span class="g47SY lOXF2" title="${profile.follower}">${scaleDown(profile.follower)}</span></a></li>
-        <li class="LH36I"><a class="_81NM2" href="javascript:;">팔로우 <span class="g47SY lOXF2">${profile.follow}</span></a></li></ul>
+        <li class="LH36I"><span class="_81NM2">게시물 <span class="g47SY lOXF2">${profileData.post}</span></span></li>
+        <li class="LH36I"><a class="_81NM2" href="javascript:;">팔로워 <span class="g47SY lOXF2" title="${profileData.follower}">${scaleDown(profileData.follower)}</span></a></li>
+        <li class="LH36I"><a class="_81NM2" href="javascript:;">팔로우 <span class="g47SY lOXF2">${profileData.follow}</span></a></li></ul>
     </ul>
     <div class="fx7hk">
         <a class="_9VEo1 T-jvg" href="javascript:;" data-type="grid"><span aria-label="게시물" class="glyphsSpritePhoto_grid__outline__24__blue_5 u-__7"></span></a>
@@ -63,8 +63,7 @@ page.insertAdjacentHTML('afterbegin', /*html*/`
         <a class="_9VEo1" href="javascript:;" data-type=""><span aria-label="태그됨" class="glyphsSpriteTag_up__outline__24__grey_5 u-__7"></span></a>
     </div>
 `);
-// grid 엘리먼트에 해당하는 래퍼 div와 로딩바만 남기고, 콘텐츠 ROW 단위로 마크업 분리
-// 기준은 API에서 내려오는 데이터를 기본으로 하되, 필요시 UI도 적절히 고려하여 설계
+
 page.insertAdjacentHTML('beforeend', /*html*/`
     <div class="_2z6nI">
         <div style="flex-direction: column;">
@@ -81,105 +80,142 @@ page.insertAdjacentHTML('beforeend', /*html*/`
     </div>
 `);
 let grid = page.querySelector('article').firstElementChild.firstElementChild;
-// 템플릿리터럴의 HTML코드를 파싱하여 DOM 생성, last 자식으로 엘리먼트 추가 (append)
+
+// 그리드영역 데이터 분리 - 마크업에서 데이터를 분리하여, 재사용 가능한 템플릿으로 만듦
+// 기준은 API에서 내려오는 데이터를 기본으로 하되, 필요시 UI도 적절히 고려하여 설계
+let timelineList = [
+    {
+        "img": "https://it-crafts.github.io/lesson/img/01.jpg"
+    },
+    {
+        "img": "https://it-crafts.github.io/lesson/img/02.jpg"
+    },
+    {
+        "img": "https://it-crafts.github.io/lesson/img/03.jpg"
+    },
+    {
+        "img": "https://it-crafts.github.io/lesson/img/04.jpg"
+    },
+    {
+        "img": "https://it-crafts.github.io/lesson/img/05.jpg"
+    },
+    {
+        "img": "https://it-crafts.github.io/lesson/img/06.jpg"
+    },
+    {
+        "img": "https://it-crafts.github.io/lesson/img/07.jpg"
+    },
+    {
+        "img": "https://it-crafts.github.io/lesson/img/08.jpg"
+    },
+    {
+        "img": "https://it-crafts.github.io/lesson/img/09.jpg"
+    },
+    {
+        "img": "https://it-crafts.github.io/lesson/img/10.jpg"
+    },
+    {
+        "img": "https://it-crafts.github.io/lesson/img/11.jpg"
+    },
+    {
+        "img": "https://it-crafts.github.io/lesson/img/12.jpg"
+    }
+];
 grid.insertAdjacentHTML('beforeend', /*html*/`
     <div class="Nnq7C weEfm">
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/01.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[0].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/02.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[1].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/03.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[2].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
     </div>
 `);
-// 템플릿리터럴의 HTML코드를 파싱하여 DOM 생성, last 자식으로 엘리먼트 추가 (append)
 grid.insertAdjacentHTML('beforeend', /*html*/`
     <div class="Nnq7C weEfm">
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/04.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[3].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/05.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[4].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/06.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[5].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
     </div>
 `);
-// 템플릿리터럴의 HTML코드를 파싱하여 DOM 생성, last 자식으로 엘리먼트 추가 (append)
 grid.insertAdjacentHTML('beforeend', /*html*/`
     <div class="Nnq7C weEfm">
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/07.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[6].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/08.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[7].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/09.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[8].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
     </div>
 `);
-// 템플릿리터럴의 HTML코드를 파싱하여 DOM 생성, last 자식으로 엘리먼트 추가 (append)
 grid.insertAdjacentHTML('beforeend', /*html*/`
     <div class="Nnq7C weEfm">
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/10.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[9].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/11.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[10].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
         <div class="v1Nh3 kIKUG _bz0w">
             <a href="javascript:;">
                 <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/12.jpg" style="object-fit: cover;"></div>
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[11].img}" style="object-fit: cover;"></div>
                 </div>
             </a>
         </div>
