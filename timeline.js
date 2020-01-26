@@ -6,7 +6,7 @@ main.innerHTML = /*html*/`
 `;
 let page = main.firstElementChild;
 
-let profileData = {
+const profileData = {
     name: 'twicetagram',
     img: 'https://it-crafts.github.io/lesson/img/profile.jpg',
     title: 'TWICE',
@@ -81,9 +81,7 @@ page.insertAdjacentHTML('beforeend', /*html*/`
 `);
 let grid = page.querySelector('article').firstElementChild.firstElementChild;
 
-// 그리드영역 데이터 분리 - 마크업에서 데이터를 분리하여, 재사용 가능한 템플릿으로 만듦
-// 기준은 API에서 내려오는 데이터를 기본으로 하되, 필요시 UI도 적절히 고려하여 설계
-let timelineList = [
+const timelineList = [
     {
         "img": "https://it-crafts.github.io/lesson/img/01.jpg"
     },
@@ -121,103 +119,49 @@ let timelineList = [
         "img": "https://it-crafts.github.io/lesson/img/12.jpg"
     }
 ];
-grid.insertAdjacentHTML('beforeend', /*html*/`
-    <div class="Nnq7C weEfm">
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[0].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
+// TODO 추후 함수형 로직으로 리팩토링
+// 원본배열을 size개씩 나누어 담아 2차원배열로 만들어 리턴
+const divide = function(list, size) {
+    // 우선 원본배열 얕은복사 후 copy에 담음 - 원본배열에 영향을 주지않기 위해
+    const copy = list.slice();
+    // size개씩 나누어 담았을 때, 몇 묶음이 될 지 선계산 - size를 못 채우는 데이터는 버림
+    const cnt = Math.floor(copy.length / size);
+
+    // 배열을 담을 새로운 배열 생성 (2차원 배열)
+    const listList = [];
+    // 선계산한 묶음개수 만큼 반복 (단순 n회 강제반복)
+    for(let i = 0; i < cnt; i++) {
+        // copy에서 size개씩 빼서 listList에 나누어 담음
+        listList.push(copy.splice(0, size));
+    }
+    return listList;
+}
+const listList = divide(timelineList, 3);
+// 가공한 2차원 배열을 이터레이션 - 3개씩 담긴 1차원 배열이 list 변수로 넘어옴
+listList.forEach(list => {
+    grid.insertAdjacentHTML('beforeend', /*html*/`
+        <div class="Nnq7C weEfm">
+            <div class="v1Nh3 kIKUG _bz0w">
+                <a href="javascript:;">
+                    <div class="eLAPa">
+                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${list[0].img}" style="object-fit: cover;"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="v1Nh3 kIKUG _bz0w">
+                <a href="javascript:;">
+                    <div class="eLAPa">
+                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${list[1].img}" style="object-fit: cover;"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="v1Nh3 kIKUG _bz0w">
+                <a href="javascript:;">
+                    <div class="eLAPa">
+                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${list[2].img}" style="object-fit: cover;"></div>
+                    </div>
+                </a>
+            </div>
         </div>
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[1].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
-        </div>
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[2].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
-        </div>
-    </div>
-`);
-grid.insertAdjacentHTML('beforeend', /*html*/`
-    <div class="Nnq7C weEfm">
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[3].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
-        </div>
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[4].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
-        </div>
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[5].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
-        </div>
-    </div>
-`);
-grid.insertAdjacentHTML('beforeend', /*html*/`
-    <div class="Nnq7C weEfm">
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[6].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
-        </div>
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[7].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
-        </div>
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[8].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
-        </div>
-    </div>
-`);
-grid.insertAdjacentHTML('beforeend', /*html*/`
-    <div class="Nnq7C weEfm">
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[9].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
-        </div>
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[10].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
-        </div>
-        <div class="v1Nh3 kIKUG _bz0w">
-            <a href="javascript:;">
-                <div class="eLAPa">
-                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${timelineList[11].img}" style="object-fit: cover;"></div>
-                </div>
-            </a>
-        </div>
-    </div>
-`);
+    `);
+})
