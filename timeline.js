@@ -16,16 +16,11 @@ let profile = {
     follow: '25',
 };
 const scaleDown = numstring => {
-    // numstring에서 단위구분자 제거 후 num 변수에 담음
     const num = numstring.replace(/,/g, '');
-    // num이 100만(1m) 이상이면
     if(num >= 1000000) {
-        // 소수 첫째자리까지 버림 후 단위(m) 붙임
         return Math.floor(num / 100000) / 10 + '백만'
     }
-    // num이 1000(1k) 이상이면
     if(num >= 1000) {
-        // 소수 첫째자리까지 버림 후 단위(k) 붙임
         return Math.floor(num / 100) / 10 + '천'
     }
     return num;
@@ -68,111 +63,125 @@ page.insertAdjacentHTML('afterbegin', /*html*/`
         <a class="_9VEo1" href="javascript:;" data-type=""><span aria-label="태그됨" class="glyphsSpriteTag_up__outline__24__grey_5 u-__7"></span></a>
     </div>
 `);
-
+// grid 엘리먼트에 해당하는 래퍼 div와 로딩바만 남기고, 콘텐츠 ROW 단위로 마크업 분리
+// 기준은 API에서 내려오는 데이터를 기본으로 하되, 필요시 UI도 적절히 고려하여 설계
 page.insertAdjacentHTML('beforeend', /*html*/`
     <div class="_2z6nI">
         <div style="flex-direction: column;">
             <article class="FyNDV">
                 <div>
                     <div style="flex-direction: column; padding-bottom: 0px; padding-top: 0px;">
-                        <div class="Nnq7C weEfm">
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/01.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/02.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/03.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="Nnq7C weEfm">
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/04.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/05.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/06.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="Nnq7C weEfm">
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/07.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/08.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/09.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="Nnq7C weEfm">
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/10.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/11.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/06.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div style="/*visibility: hidden;*/" class="_4emnV">
                     <div class="Igw0E IwRSH YBx95 _4EzTm _9qQ0O ZUqME" style="height: 32px; width: 32px;"><svg aria-label="읽어들이는 중..." class="By4nA" viewBox="0 0 100 100"><rect fill="#555555" height="6" opacity="0" rx="3" ry="3" transform="rotate(-90 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.08333333333333333" rx="3" ry="3" transform="rotate(-60 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.16666666666666666" rx="3" ry="3" transform="rotate(-30 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.25" rx="3" ry="3" transform="rotate(0 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.3333333333333333" rx="3" ry="3" transform="rotate(30 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.4166666666666667" rx="3" ry="3" transform="rotate(60 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.5" rx="3" ry="3" transform="rotate(90 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.5833333333333334" rx="3" ry="3" transform="rotate(120 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.6666666666666666" rx="3" ry="3" transform="rotate(150 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.75" rx="3" ry="3" transform="rotate(180 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.8333333333333334" rx="3" ry="3" transform="rotate(210 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.9166666666666666" rx="3" ry="3" transform="rotate(240 50 50)" width="25" x="72" y="47"></rect></svg></div>
                 </div>
             </article>
+        </div>
+    </div>
+`);
+let grid = page.querySelector('article').firstElementChild.firstElementChild;
+// 템플릿리터럴의 HTML코드를 파싱하여 DOM 생성, last 자식으로 엘리먼트 추가 (append)
+grid.insertAdjacentHTML('beforeend', /*html*/`
+    <div class="Nnq7C weEfm">
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/01.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
+        </div>
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/02.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
+        </div>
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/03.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+`);
+// 템플릿리터럴의 HTML코드를 파싱하여 DOM 생성, last 자식으로 엘리먼트 추가 (append)
+grid.insertAdjacentHTML('beforeend', /*html*/`
+    <div class="Nnq7C weEfm">
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/04.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
+        </div>
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/05.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
+        </div>
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/06.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+`);
+// 템플릿리터럴의 HTML코드를 파싱하여 DOM 생성, last 자식으로 엘리먼트 추가 (append)
+grid.insertAdjacentHTML('beforeend', /*html*/`
+    <div class="Nnq7C weEfm">
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/07.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
+        </div>
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/08.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
+        </div>
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/09.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+`);
+// 템플릿리터럴의 HTML코드를 파싱하여 DOM 생성, last 자식으로 엘리먼트 추가 (append)
+grid.insertAdjacentHTML('beforeend', /*html*/`
+    <div class="Nnq7C weEfm">
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/10.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
+        </div>
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/11.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
+        </div>
+        <div class="v1Nh3 kIKUG _bz0w">
+            <a href="javascript:;">
+                <div class="eLAPa">
+                    <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/12.jpg" style="object-fit: cover;"></div>
+                </div>
+            </a>
         </div>
     </div>
 `);
