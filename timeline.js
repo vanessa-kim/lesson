@@ -1,6 +1,9 @@
+// 공통으로 재사용하기 위한 이미지패스 상수 - 사용하지 않고, 애초에 데이터에 붙어서 나오게 운영할 수도 있음
+const IMG_PATH = 'https://it-crafts.github.io/lesson/img';
+
 const main = document.querySelector('main');
 
-main.innerHTML = /*html*/`
+main.innerHTML = `
     <div class="v9tJq VfzDr">
     </div>
 `;
@@ -8,7 +11,7 @@ let page = main.firstElementChild;
 
 const profileData = {
     name: 'twicetagram',
-    img: 'https://it-crafts.github.io/lesson/img/profile.jpg',
+    img: '/profile.jpg',
     title: 'TWICE',
     text: 'TWICE OFFICIAL INSTAGRAM<br>^-^',
     post: '2,010',
@@ -25,12 +28,12 @@ const scaleDown = numstring => {
     }
     return num;
 };
-page.insertAdjacentHTML('afterbegin', /*html*/`
+page.insertAdjacentHTML('afterbegin', `
     <header class="HVbuG">
         <div class="XjzKX">
             <div class="RR-M- h5uC0" role="button" tabindex="0">
                 <canvas class="CfWVH" height="91" width="91" style="position: absolute; top: -7px; left: -7px; width: 91px; height: 91px;"></canvas>
-                <span class="_2dbep" role="link" tabindex="0" style="width: 77px; height: 77px;"><img alt="${profileData.name}님의 프로필 사진" class="_6q-tv" src="${profileData.img}"></span>
+                <span class="_2dbep" role="link" tabindex="0" style="width: 77px; height: 77px;"><img alt="${profileData.name}님의 프로필 사진" class="_6q-tv" src="${IMG_PATH}${profileData.img}"></span>
             </div>
         </div>
         <section class="zwlfE">
@@ -64,7 +67,7 @@ page.insertAdjacentHTML('afterbegin', /*html*/`
     </div>
 `);
 
-page.insertAdjacentHTML('beforeend', /*html*/`
+page.insertAdjacentHTML('beforeend', `
     <div class="_2z6nI">
         <div style="flex-direction: column;">
             <article class="FyNDV">
@@ -83,43 +86,42 @@ let grid = page.querySelector('article').firstElementChild.firstElementChild;
 
 const timelineList = [
     {
-        "img": "https://it-crafts.github.io/lesson/img/01.jpg"
+        "img": "/01.jpg"
     },
     {
-        "img": "https://it-crafts.github.io/lesson/img/02.jpg"
+        "img": "/02.jpg"
     },
     {
-        "img": "https://it-crafts.github.io/lesson/img/03.jpg"
+        "img": "/03.jpg"
     },
     {
-        "img": "https://it-crafts.github.io/lesson/img/04.jpg"
+        "img": "/04.jpg"
     },
     {
-        "img": "https://it-crafts.github.io/lesson/img/05.jpg"
+        "img": "/05.jpg"
     },
     {
-        "img": "https://it-crafts.github.io/lesson/img/06.jpg"
+        "img": "/06.jpg"
     },
     {
-        "img": "https://it-crafts.github.io/lesson/img/07.jpg"
+        "img": "/07.jpg"
     },
     {
-        "img": "https://it-crafts.github.io/lesson/img/08.jpg"
+        "img": "/08.jpg"
     },
     {
-        "img": "https://it-crafts.github.io/lesson/img/09.jpg"
+        "img": "/09.jpg"
     },
     {
-        "img": "https://it-crafts.github.io/lesson/img/10.jpg"
+        "img": "/10.jpg"
     },
     {
-        "img": "https://it-crafts.github.io/lesson/img/11.jpg"
+        "img": "/11.jpg"
     },
     {
-        "img": "https://it-crafts.github.io/lesson/img/12.jpg"
+        "img": "/12.jpg"
     }
 ];
-// TODO 추후 함수형 로직으로 리팩토링
 const divide = function(list, size) {
     const copy = list.slice();
     const cnt = Math.floor(copy.length / size);
@@ -129,26 +131,24 @@ const divide = function(list, size) {
         listList.push(copy.splice(0, size));
     }
     return listList;
-}
+};
 const listList = divide(timelineList, 3);
 listList.forEach(list => {
-    // 각 row 엘리먼트에 해당하는 래퍼 div만 남기고, 콘텐츠 COLUMN 단위로 마크업 분리
-    // UI이슈로 인해 1차원 리스트인 API 데이터를 2차원 리스트로 가공하여 사용
-    grid.insertAdjacentHTML('beforeend', /*html*/`
+    grid.insertAdjacentHTML('beforeend', `
         <div class="Nnq7C weEfm">
         </div>
     `);
     let row = grid.lastElementChild;
 
     list.forEach(data => {
-        row.insertAdjacentHTML('beforeend', /*html*/`
+        row.insertAdjacentHTML('beforeend', `
             <div class="v1Nh3 kIKUG _bz0w">
                 <a href="javascript:;">
                     <div class="eLAPa">
-                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${data.img}" style="object-fit: cover;"></div>
+                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${IMG_PATH}${data.img}" style="object-fit: cover;"></div>
                     </div>
                 </a>
             </div>
         `);
     })
-})
+});
