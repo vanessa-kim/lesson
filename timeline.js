@@ -1,3 +1,8 @@
+/**
+ * Copyrightⓒ2020 by Moon Hanju (github.com/it-crafts)
+ * All rights reserved. 무단전재 및 재배포 금지.
+ * All contents cannot be copied without permission.
+ */
 (async () => {
 const IMG_PATH = 'https://it-crafts.github.io/lesson/img';
 const fetchApiData = async function(url, page = 'info') {
