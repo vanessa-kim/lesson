@@ -1,7 +1,5 @@
-// Top-level await 임시사용을 위한 async 즉시실행함수 사용 (2주차에 제거예정)
 (async () => {
 const IMG_PATH = 'https://it-crafts.github.io/lesson/img';
-// url만 호출시 infoData 리턴, 특정 페이지 호출시 pageData 리턴
 const fetchApiData = async function(url, page = 'info') {
     const res = await fetch(url + page);
     const data = await res.json();
@@ -11,17 +9,14 @@ const fetchApiData = async function(url, page = 'info') {
 const main = document.querySelector('main');
 
 main.innerHTML = `
-    <div class="v9tJq VfzDr">
+    <div class="v9tJq">
     </div>
 `;
 let page = main.firstElementChild;
-// 타임라인 REST API URL - info API, page API가 공통 부모패스를 가짐
 const url = 'https://my-json-server.typicode.com/it-crafts/lesson/timeline/';
 
-// infoData를 동기로 호출, totalPage와 profileData 받아옴 (API 수행완료 전까지 본 라인에서 전체로직 블록됨)
-// infoData와 pageData가 순차적으로 호출되어, 화면로드 지연 발생 (3주차에 고도화예정)
 const infoData = await fetchApiData(url);
-const totalPage = infoData.totalPage;
+const totalPage = infoData.totalPage * 1;
 const profileData = infoData.profile;
 const scaleDown = numstring => {
     const num = numstring.replace(/,/g, '');
@@ -71,7 +66,6 @@ page.insertAdjacentHTML('afterbegin', `
         <a class="_9VEo1" href="javascript:;" data-type=""><span aria-label="태그됨" class="glyphsSpriteTag_up__outline__24__grey_5 u-__7"></span></a>
     </div>
 `);
-
 page.insertAdjacentHTML('beforeend', `
     <div class="_2z6nI">
         <div style="flex-direction: column;">
@@ -80,18 +74,25 @@ page.insertAdjacentHTML('beforeend', `
                     <div style="flex-direction: column; padding-bottom: 0px; padding-top: 0px;">
                     </div>
                 </div>
-                <div style="/*visibility: hidden;*/" class="_4emnV">
+                <div style="display: none;" class="_4emnV">
                     <div class="Igw0E IwRSH YBx95 _4EzTm _9qQ0O ZUqME" style="height: 32px; width: 32px;"><svg aria-label="읽어들이는 중..." class="By4nA" viewBox="0 0 100 100"><rect fill="#555555" height="6" opacity="0" rx="3" ry="3" transform="rotate(-90 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.08333333333333333" rx="3" ry="3" transform="rotate(-60 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.16666666666666666" rx="3" ry="3" transform="rotate(-30 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.25" rx="3" ry="3" transform="rotate(0 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.3333333333333333" rx="3" ry="3" transform="rotate(30 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.4166666666666667" rx="3" ry="3" transform="rotate(60 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.5" rx="3" ry="3" transform="rotate(90 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.5833333333333334" rx="3" ry="3" transform="rotate(120 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.6666666666666666" rx="3" ry="3" transform="rotate(150 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.75" rx="3" ry="3" transform="rotate(180 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.8333333333333334" rx="3" ry="3" transform="rotate(210 50 50)" width="25" x="72" y="47"></rect><rect fill="#555555" height="6" opacity="0.9166666666666666" rx="3" ry="3" transform="rotate(240 50 50)" width="25" x="72" y="47"></rect></svg></div>
+                </div>
+                <div class="Igw0E rBNOH YBx95 ybXk5 _4EzTm soMvl" style="margin-right: 8px; display: none;">
+                    <button class="sqdOP L3NKy y3zKF _4pI4F" type="button" style="margin: 16px 8px">더보기</button>
+                    <button class="sqdOP L3NKy y3zKF _4pI4F" type="button" style="margin: 16px 8px">전체보기</button>
                 </div>
             </article>
         </div>
     </div>
 `);
-let grid = page.querySelector('article').firstElementChild.firstElementChild;
-
-// pageData를 동기로 호출, timelineList 받아옴 (API 수행완료 전까지 본 라인에서 전체로직 블록됨)
-// infoData와 pageData가 순차적으로 호출되어, 화면로드 지연 발생 (3주차에 고도화예정)
-const timelineList = await fetchApiData(url, 1);
+// article태그 DOM트리 탐색이 반복되므로, article 변수에 담아 객체 캐싱
+const article = page.querySelector('article');
+let grid = article.children[0].firstElementChild;
+let loading = article.children[1].firstElementChild;
+let more = article.children[2].firstElementChild;
+let p = 1;
+// 1페이지 호출 후 p가 2로 늘어남 (1만큼) - 증가연산은 값 평가 이후 수행됨
+const timelineList = await fetchApiData(url, p++);
 const divide = function(list, size) {
     const copy = list.slice();
     const cnt = Math.floor(copy.length / size);
@@ -120,6 +121,20 @@ listList.forEach(list => {
                 </a>
             </div>
         `);
-    })
+    });
 });
+
+// 필요한 시점에 로딩바(의 부모 래퍼div), 더보기버튼(의 부모 래퍼div) display: none; 제거
+more.parentElement.style.display = '';
+// more.parentElement.style.display = 'none';
+loading.parentElement.style.display = '';
+// loading.parentElement.style.display = 'none';
+console.log('>> p: ', p);
+console.log('>> totalPage: ', totalPage);
+const clickMore = function(e) {
+    alert('더보기 로직개발 필요');
+}
+// 필요한 시점에 추가한 이벤트리스너 제거
+more.addEventListener('click', clickMore);
+// more.removeEventListener('click', clickMore);
 })();
