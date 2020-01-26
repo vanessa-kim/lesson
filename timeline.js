@@ -12,7 +12,7 @@ page.insertAdjacentHTML('afterbegin', /*html*/`
         <div class="XjzKX">
             <div class="RR-M- h5uC0" role="button" tabindex="0">
                 <canvas class="CfWVH" height="91" width="91" style="position: absolute; top: -7px; left: -7px; width: 91px; height: 91px;"></canvas>
-                <span class="_2dbep" role="link" tabindex="0" style="width: 77px; height: 77px;"><img alt="twicetagram님의 프로필 사진" class="_6q-tv" src="https://scontent-icn1-1.cdninstagram.com/v/t51.2885-19/s150x150/14350502_2130269970532564_1274547492301570048_a.jpg?_nc_ht=scontent-icn1-1.cdninstagram.com&_nc_ohc=VAPlNLndDy8AX8WMXU1&oh=c481409de367ca8780f5260a339cac68&oe=5ED7117A"></span>
+                <span class="_2dbep" role="link" tabindex="0" style="width: 77px; height: 77px;"><img alt="twicetagram님의 프로필 사진" class="_6q-tv" src="https://it-crafts.github.io/lesson/img/profile.jpg"></span>
             </div>
         </div>
         <section class="zwlfE">
@@ -56,44 +56,21 @@ page.insertAdjacentHTML('beforeend', /*html*/`
                             <div class="v1Nh3 kIKUG _bz0w">
                                 <a href="javascript:;">
                                     <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/01.jpg" style="object-fit: cover;"></div>
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/01.jpg" style="object-fit: cover;"></div>
                                     </div>
                                 </a>
                             </div>
                             <div class="v1Nh3 kIKUG _bz0w">
                                 <a href="javascript:;">
                                     <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/02.jpg" style="object-fit: cover;"></div>
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/02.jpg" style="object-fit: cover;"></div>
                                     </div>
                                 </a>
                             </div>
                             <div class="v1Nh3 kIKUG _bz0w">
                                 <a href="javascript:;">
                                     <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/03.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="Nnq7C weEfm">
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/04.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/05.jpg" style="object-fit: cover;"></div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="v1Nh3 kIKUG _bz0w">
-                                <a href="javascript:;">
-                                    <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/06.jpg" style="object-fit: cover;"></div>
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/03.jpg" style="object-fit: cover;"></div>
                                     </div>
                                 </a>
                             </div>
@@ -102,21 +79,21 @@ page.insertAdjacentHTML('beforeend', /*html*/`
                             <div class="v1Nh3 kIKUG _bz0w">
                                 <a href="javascript:;">
                                     <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/07.jpg" style="object-fit: cover;"></div>
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/04.jpg" style="object-fit: cover;"></div>
                                     </div>
                                 </a>
                             </div>
                             <div class="v1Nh3 kIKUG _bz0w">
                                 <a href="javascript:;">
                                     <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/08.jpg" style="object-fit: cover;"></div>
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/05.jpg" style="object-fit: cover;"></div>
                                     </div>
                                 </a>
                             </div>
                             <div class="v1Nh3 kIKUG _bz0w">
                                 <a href="javascript:;">
                                     <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/09.jpg" style="object-fit: cover;"></div>
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/06.jpg" style="object-fit: cover;"></div>
                                     </div>
                                 </a>
                             </div>
@@ -125,21 +102,44 @@ page.insertAdjacentHTML('beforeend', /*html*/`
                             <div class="v1Nh3 kIKUG _bz0w">
                                 <a href="javascript:;">
                                     <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/10.jpg" style="object-fit: cover;"></div>
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/07.jpg" style="object-fit: cover;"></div>
                                     </div>
                                 </a>
                             </div>
                             <div class="v1Nh3 kIKUG _bz0w">
                                 <a href="javascript:;">
                                     <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/11.jpg" style="object-fit: cover;"></div>
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/08.jpg" style="object-fit: cover;"></div>
                                     </div>
                                 </a>
                             </div>
                             <div class="v1Nh3 kIKUG _bz0w">
                                 <a href="javascript:;">
                                     <div class="eLAPa">
-                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://raw.githubusercontent.com/it-crafts/lesson/master/img/06.jpg" style="object-fit: cover;"></div>
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/09.jpg" style="object-fit: cover;"></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="Nnq7C weEfm">
+                            <div class="v1Nh3 kIKUG _bz0w">
+                                <a href="javascript:;">
+                                    <div class="eLAPa">
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/10.jpg" style="object-fit: cover;"></div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="v1Nh3 kIKUG _bz0w">
+                                <a href="javascript:;">
+                                    <div class="eLAPa">
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/11.jpg" style="object-fit: cover;"></div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="v1Nh3 kIKUG _bz0w">
+                                <a href="javascript:;">
+                                    <div class="eLAPa">
+                                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="https://it-crafts.github.io/lesson/img/06.jpg" style="object-fit: cover;"></div>
                                     </div>
                                 </a>
                             </div>
