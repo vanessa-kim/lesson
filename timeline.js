@@ -6,8 +6,6 @@ main.innerHTML = /*html*/`
 `;
 let page = main.firstElementChild;
 
-// 헤더영역 데이터 분리 - 마크업에서 데이터를 분리하여, 재사용 가능한 템플릿으로 만듦
-// 기준은 API에서 내려오는 데이터를 기본으로 하되, 필요시 UI도 적절히 고려하여 설계
 let profile = {
     name: 'twicetagram',
     img: 'https://it-crafts.github.io/lesson/img/profile.jpg',
@@ -16,6 +14,21 @@ let profile = {
     post: '2,010',
     follower: '11,543,431',
     follow: '25',
+};
+const scaleDown = numstring => {
+    // numstring에서 단위구분자 제거 후 num 변수에 담음
+    const num = numstring.replace(/,/g, '');
+    // num이 100만(1m) 이상이면
+    if(num >= 1000000) {
+        // 소수 첫째자리까지 버림 후 단위(m) 붙임
+        return Math.floor(num / 100000) / 10 + '백만'
+    }
+    // num이 1000(1k) 이상이면
+    if(num >= 1000) {
+        // 소수 첫째자리까지 버림 후 단위(k) 붙임
+        return Math.floor(num / 100) / 10 + '천'
+    }
+    return num;
 };
 page.insertAdjacentHTML('afterbegin', /*html*/`
     <header class="HVbuG">
@@ -46,7 +59,7 @@ page.insertAdjacentHTML('afterbegin', /*html*/`
     </div>
     <ul class="_3dEHb">
         <li class="LH36I"><span class="_81NM2">게시물 <span class="g47SY lOXF2">${profile.post}</span></span></li>
-        <li class="LH36I"><a class="_81NM2" href="javascript:;">팔로워 <span class="g47SY lOXF2" title="${profile.follower}">${profile.follower}</span></a></li>
+        <li class="LH36I"><a class="_81NM2" href="javascript:;">팔로워 <span class="g47SY lOXF2" title="${profile.follower}">${scaleDown(profile.follower)}</span></a></li>
         <li class="LH36I"><a class="_81NM2" href="javascript:;">팔로우 <span class="g47SY lOXF2">${profile.follow}</span></a></li></ul>
     </ul>
     <div class="fx7hk">
