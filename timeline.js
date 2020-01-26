@@ -1,5 +1,12 @@
-// 공통으로 재사용하기 위한 이미지패스 상수 - 사용하지 않고, 애초에 데이터에 붙어서 나오게 운영할 수도 있음
+// Top-level await 임시사용을 위한 async 즉시실행함수 사용 (2주차에 제거예정)
+(async () => {
 const IMG_PATH = 'https://it-crafts.github.io/lesson/img';
+// url만 호출시 infoData 리턴, 특정 페이지 호출시 pageData 리턴
+const fetchApiData = async function(url, page = 'info') {
+    const res = await fetch(url + page);
+    const data = await res.json();
+    return data.data;
+}
 
 const main = document.querySelector('main');
 
@@ -8,16 +15,14 @@ main.innerHTML = `
     </div>
 `;
 let page = main.firstElementChild;
+// 타임라인 REST API URL - info API, page API가 공통 부모패스를 가짐
+const url = 'https://my-json-server.typicode.com/it-crafts/lesson/timeline/';
 
-const profileData = {
-    name: 'twicetagram',
-    img: '/profile.jpg',
-    title: 'TWICE',
-    text: 'TWICE OFFICIAL INSTAGRAM<br>^-^',
-    post: '2,010',
-    follower: '11,543,431',
-    follow: '25',
-};
+// infoData를 동기로 호출, totalPage와 profileData 받아옴 (API 수행완료 전까지 본 라인에서 전체로직 블록됨)
+// infoData와 pageData가 순차적으로 호출되어, 화면로드 지연 발생 (3주차에 고도화예정)
+const infoData = await fetchApiData(url);
+const totalPage = infoData.totalPage;
+const profileData = infoData.profile;
 const scaleDown = numstring => {
     const num = numstring.replace(/,/g, '');
     if(num >= 1000000) {
@@ -84,44 +89,9 @@ page.insertAdjacentHTML('beforeend', `
 `);
 let grid = page.querySelector('article').firstElementChild.firstElementChild;
 
-const timelineList = [
-    {
-        "img": "/01.jpg"
-    },
-    {
-        "img": "/02.jpg"
-    },
-    {
-        "img": "/03.jpg"
-    },
-    {
-        "img": "/04.jpg"
-    },
-    {
-        "img": "/05.jpg"
-    },
-    {
-        "img": "/06.jpg"
-    },
-    {
-        "img": "/07.jpg"
-    },
-    {
-        "img": "/08.jpg"
-    },
-    {
-        "img": "/09.jpg"
-    },
-    {
-        "img": "/10.jpg"
-    },
-    {
-        "img": "/11.jpg"
-    },
-    {
-        "img": "/12.jpg"
-    }
-];
+// pageData를 동기로 호출, timelineList 받아옴 (API 수행완료 전까지 본 라인에서 전체로직 블록됨)
+// infoData와 pageData가 순차적으로 호출되어, 화면로드 지연 발생 (3주차에 고도화예정)
+const timelineList = await fetchApiData(url, 1);
 const divide = function(list, size) {
     const copy = list.slice();
     const cnt = Math.floor(copy.length / size);
@@ -152,3 +122,4 @@ listList.forEach(list => {
         `);
     })
 });
+})();
