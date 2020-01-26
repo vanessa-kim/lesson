@@ -120,48 +120,35 @@ const timelineList = [
     }
 ];
 // TODO 추후 함수형 로직으로 리팩토링
-// 원본배열을 size개씩 나누어 담아 2차원배열로 만들어 리턴
 const divide = function(list, size) {
-    // 우선 원본배열 얕은복사 후 copy에 담음 - 원본배열에 영향을 주지않기 위해
     const copy = list.slice();
-    // size개씩 나누어 담았을 때, 몇 묶음이 될 지 선계산 - size를 못 채우는 데이터는 버림
     const cnt = Math.floor(copy.length / size);
 
-    // 배열을 담을 새로운 배열 생성 (2차원 배열)
     const listList = [];
-    // 선계산한 묶음개수 만큼 반복 (단순 n회 강제반복)
     for(let i = 0; i < cnt; i++) {
-        // copy에서 size개씩 빼서 listList에 나누어 담음
         listList.push(copy.splice(0, size));
     }
     return listList;
 }
 const listList = divide(timelineList, 3);
-// 가공한 2차원 배열을 이터레이션 - 3개씩 담긴 1차원 배열이 list 변수로 넘어옴
 listList.forEach(list => {
+    // 각 row 엘리먼트에 해당하는 래퍼 div만 남기고, 콘텐츠 COLUMN 단위로 마크업 분리
+    // UI이슈로 인해 1차원 리스트인 API 데이터를 2차원 리스트로 가공하여 사용
     grid.insertAdjacentHTML('beforeend', /*html*/`
         <div class="Nnq7C weEfm">
-            <div class="v1Nh3 kIKUG _bz0w">
-                <a href="javascript:;">
-                    <div class="eLAPa">
-                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${list[0].img}" style="object-fit: cover;"></div>
-                    </div>
-                </a>
-            </div>
-            <div class="v1Nh3 kIKUG _bz0w">
-                <a href="javascript:;">
-                    <div class="eLAPa">
-                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${list[1].img}" style="object-fit: cover;"></div>
-                    </div>
-                </a>
-            </div>
-            <div class="v1Nh3 kIKUG _bz0w">
-                <a href="javascript:;">
-                    <div class="eLAPa">
-                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${list[2].img}" style="object-fit: cover;"></div>
-                    </div>
-                </a>
-            </div>
         </div>
     `);
+    let row = grid.lastElementChild;
+
+    list.forEach(data => {
+        row.insertAdjacentHTML('beforeend', /*html*/`
+            <div class="v1Nh3 kIKUG _bz0w">
+                <a href="javascript:;">
+                    <div class="eLAPa">
+                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${data.img}" style="object-fit: cover;"></div>
+                    </div>
+                </a>
+            </div>
+        `);
+    })
 })
