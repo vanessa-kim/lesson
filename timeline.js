@@ -7,6 +7,10 @@
 const IMG_PATH = 'https://it-crafts.github.io/lesson/img';
 const fetchApiData = async function(url, page = 'info') {
     const res = await fetch(url + page);
+    // [개념 확인 부탁] 
+    // 제가 라이브러리 사용하지 않고 순수 바닐라js로 http 통신을 한게 처음인데요.
+    // fetch()의 response로 새 promise객체를 반환하고, 그상태로는 데이터를 쓸 수 없어서
+    // json()함수를 실행해줘서 데이터를 사용할 수 있도록 변환한거라고 이해가되는데 맞는지 확인 부탁드립니다!(개념이 헷갈리네요..^^;;)
     const data = await res.json();
     return data.data;
 }
@@ -92,6 +96,9 @@ page.insertAdjacentHTML('beforeend', `
 `);
 // article태그 DOM트리 탐색이 반복되므로, article 변수에 담아 객체 캐싱
 const article = page.querySelector('article');
+// [질문 1] 왜 빈 div를 생성해서 노드를 선택해주고 밀어넣는 방식으로 하는지 궁금합니다.
+// [질문 2] 그리고 children[0] 이렇게 인덱스 번호로 선택하게 되면 나중에 중간에 예기치 못한
+// 태그가 추가되었을 경우 인덱스번호를 바꿔줘야할 것 같은데 인덱스 번호로 선택하신 이유가 궁금합니다!
 let grid = article.children[0].firstElementChild;
 let loading = article.children[1].firstElementChild;
 let more = article.children[2].firstElementChild;
@@ -110,6 +117,10 @@ async function setPage(){
         const timelineList = await fetchApiData(url, p++);
 
         const divide = function(list, size) {
+            // [질문 3] Array.prototype.slice()를 통해 얕은 복사를 실행하게 되면
+            // console.log()에 찍었을 때 배열안의 객체를 확인할 수가 없더라구요!
+            // console.log(JSON.strigify(copy)); 이렇게 찍어서 확인해봤는데..
+            // 멘토님은 얕은복사한 객체의 내용 확인하고 싶으시면 어떻게 하시나요??
             const copy = list.slice();
             const cnt = Math.floor(copy.length / size);
 
