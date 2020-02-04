@@ -96,50 +96,72 @@ let grid = article.children[0].firstElementChild;
 let loading = article.children[1].firstElementChild;
 let more = article.children[2].firstElementChild;
 let p = 1;
-// 1페이지 호출 후 p가 2로 늘어남 (1만큼) - 증가연산은 값 평가 이후 수행됨
-const timelineList = await fetchApiData(url, p++);
-const divide = function(list, size) {
-    const copy = list.slice();
-    const cnt = Math.floor(copy.length / size);
 
-    const listList = [];
-    for(let i = 0; i < cnt; i++) {
-        listList.push(copy.splice(0, size));
-    }
-    return listList;
-};
-const listList = divide(timelineList, 3);
-listList.forEach(list => {
-    grid.insertAdjacentHTML('beforeend', `
-        <div class="Nnq7C weEfm">
-        </div>
-    `);
-    let row = grid.lastElementChild;
+// 전체적으로 반복되는 구간이고, await를 포함하는 함수이기 때문에 async 함수로 묶어줌
+async function setPage(){
+    try{
+        /**
+        * 버튼 중복 클릭은 에러를 유발하기 때문에, 중복 클릭 방지를 위해 버튼 바로 숨김 처리
+        * -> fetch 로직 아래에 버튼을 숨김처리하면, fetch를 진행하는사이 클릭 여러번 가능하므로 사전에 막음
+        */
+        more.parentElement.style.display = 'none';
+        loading.parentElement.style.display = '';
+        
+        const timelineList = await fetchApiData(url, p++);
 
-    list.forEach(data => {
-        row.insertAdjacentHTML('beforeend', `
-            <div class="v1Nh3 kIKUG _bz0w">
-                <a href="javascript:;">
-                    <div class="eLAPa">
-                        <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${IMG_PATH}${data.img}" style="object-fit: cover;"></div>
+        const divide = function(list, size) {
+            const copy = list.slice();
+            const cnt = Math.floor(copy.length / size);
+
+            const listList = [];
+            for(let i = 0; i < cnt; i++) {
+                listList.push(copy.splice(0, size));
+            }
+            return listList;
+        };
+        
+        const listList = divide(timelineList, 3);
+        listList.forEach(list => {
+            grid.insertAdjacentHTML('beforeend', `
+                <div class="Nnq7C weEfm">
+                </div>
+            `);
+            let row = grid.lastElementChild;
+
+            list.forEach(data => {
+                row.insertAdjacentHTML('beforeend', `
+                    <div class="v1Nh3 kIKUG _bz0w">
+                        <a href="javascript:;">
+                            <div class="eLAPa">
+                                <div class="KL4Bh"><img class="FFVAD" decoding="auto" src="${IMG_PATH}${data.img}" style="object-fit: cover;"></div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
-        `);
-    });
-});
+                `);
+            });
+        });
+    }catch(e){
+        console.error(e);
+    }finally{            
+        more.parentElement.style.display = '';
+        loading.parentElement.style.display = 'none';
+    };
+};
+setPage();
 
-// 필요한 시점에 로딩바(의 부모 래퍼div), 더보기버튼(의 부모 래퍼div) display: none; 제거
-more.parentElement.style.display = '';
-// more.parentElement.style.display = 'none';
-loading.parentElement.style.display = '';
-// loading.parentElement.style.display = 'none';
-console.log('>> p: ', p);
-console.log('>> totalPage: ', totalPage);
 const clickMore = function(e) {
-    alert('더보기 로직개발 필요');
+    /**
+     * fetch 로직을 실행 할 때 마다 p를 증가 연산하고 있기 때문에 
+     * 클릭할때는 p의 번호가 늘 현재페이지 +1 이 된 상태이므로
+     * 현재 페이지를 가리 키기 위해 p-1일 때 이벤트 제거
+     *  */ 
+    if(totalPage == p - 1){
+        more.removeEventListener('click', clickMore);
+        return;
+    };
+    
+    setPage();
 }
-// 필요한 시점에 추가한 이벤트리스너 제거
 more.addEventListener('click', clickMore);
-// more.removeEventListener('click', clickMore);
+
 })();
