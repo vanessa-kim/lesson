@@ -7,6 +7,11 @@
 const IMG_PATH = 'https://it-crafts.github.io/lesson/img';
 const fetchApiData = async function(url, page = 'info') {
     const res = await fetch(url + page);
+    /* COMMENT 네트워크 레벨로 깊게 들어가면 끝도없고, 브라우저 엔진마다 동작이 조금씩 다를 수 있습니다
+    일단은 fetch() 프로미스가 resolve한 res 객체는 HTTP 리스폰스 그 자체를 바라보고 있는 API라고 보시면 되고 (아직 JS로 데이터는 리드되지 않은 상태)
+    res.json() 시점에 데이터를 실제로 긁어오기 시작해서, 로드+컨버팅이 동시에 일어난다고 보시면 됩니다
+    통신전문을 다 받은 시점에 로드를 시작하는 게 아니라, 전문이 들어옴과 동시에 리드를 시작합니다 (그래서 res.json()도 비동기)
+    이미지나 동영상 스트리밍 같은 경우에 유용하고, 일반 JSON API 통신에서는 큰 신경은 안 써도 됩니다 */
     // [개념 확인 부탁] 
     // 제가 라이브러리 사용하지 않고 순수 바닐라js로 http 통신을 한게 처음인데요.
     // fetch()의 response로 새 promise객체를 반환하고, 그상태로는 데이터를 쓸 수 없어서
@@ -97,8 +102,11 @@ page.insertAdjacentHTML('beforeend', `
 // article태그 DOM트리 탐색이 반복되므로, article 변수에 담아 객체 캐싱
 const article = page.querySelector('article');
 // [질문 1] 왜 빈 div를 생성해서 노드를 선택해주고 밀어넣는 방식으로 하는지 궁금합니다.
+/* COMMENT 어느 부분을 말씀하시는 지 모르겠습니다. 라인이나 메소드명을 명시해주세요. */
 // [질문 2] 그리고 children[0] 이렇게 인덱스 번호로 선택하게 되면 나중에 중간에 예기치 못한
 // 태그가 추가되었을 경우 인덱스번호를 바꿔줘야할 것 같은데 인덱스 번호로 선택하신 이유가 궁금합니다!
+/* COMMENT 룩업에도 자원이 소요되기 때문에 각 컴포넌트의 배치순서는 하드코딩으로 잡았고, 조금 더 정확히 간다면 별도의 룩업작업을 하는 게 맞습니다
+후반주차에는 만들고 룩업을 해서 DOM객체를 잡는 게 아닌, 각 DOM객체를 만들어서 잡고 부모에 밀어넣는 형태로 리팩토링 됩니다 */
 let grid = article.children[0].firstElementChild;
 let loading = article.children[1].firstElementChild;
 let more = article.children[2].firstElementChild;
@@ -121,6 +129,9 @@ async function setPage(){
             // console.log()에 찍었을 때 배열안의 객체를 확인할 수가 없더라구요!
             // console.log(JSON.strigify(copy)); 이렇게 찍어서 확인해봤는데..
             // 멘토님은 얕은복사한 객체의 내용 확인하고 싶으시면 어떻게 하시나요??
+            /* COMMENT 얕은복사 여부와 관계없이, 애초에 console.log로는 배열 안의 객체는 확인할 수 없습니다 (펼쳐야 볼 수 있습니다)
+            참조형 변수나 배열 등의 엘리먼트는, 담고있는 참조형이 원본인지 얕은복사본인지 알지 못합니다. (동일하게 동작합니다)
+            참고로, 로그 찍어서 디버깅 하는 것 자체가 잘못된 개발습관입니다. 디버깅은 디버거로 하는 게 바람직하고, 개발속도도 월등히 빠릅니다. */
             const copy = list.slice();
             const cnt = Math.floor(copy.length / size);
 
