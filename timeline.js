@@ -165,6 +165,7 @@ async function setPage(){
     }catch(e){
         console.error(e);
     }finally{            
+        /* TODO 마지막 페이지에서는 더보기 버튼 다시 노출되지 않도록 처리 해주세요 */
         more.parentElement.style.display = '';
         loading.parentElement.style.display = 'none';
     };
@@ -172,6 +173,7 @@ async function setPage(){
 setPage();
 
 const clickMore = function(e) {
+    /* TODO 클릭을 한 번 더 받아야 이벤트가 떨어집니다. 마지막 페이지 로드시에 떨어지도록 해주세요. */
     /**
      * fetch 로직을 실행 할 때 마다 p를 증가 연산하고 있기 때문에 
      * 클릭할때는 p의 번호가 늘 현재페이지 +1 이 된 상태이므로
