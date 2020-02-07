@@ -169,6 +169,11 @@ async function setPage(){
         console.error(e);
     }finally{            
         /* TODO 마지막 페이지에서는 더보기 버튼 다시 노출되지 않도록 처리 해주세요 */
+        if(totalPage == p - 1) { 
+            more.parentElement.style.display = 'none';
+            loading.parentElement.style.display = 'none';
+            return ;
+        }
         more.parentElement.style.display = '';
         loading.parentElement.style.display = 'none';
     };
@@ -182,7 +187,7 @@ const clickMore = function(e) {
      * 클릭할때는 p의 번호가 늘 현재페이지 +1 이 된 상태이므로
      * 현재 페이지를 가리 키기 위해 p-1일 때 이벤트 제거
      *  */ 
-    if(totalPage == p - 1){
+    if(totalPage == p - 2){
         more.removeEventListener('click', clickMore);
         return;
     };
