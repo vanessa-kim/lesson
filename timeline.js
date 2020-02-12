@@ -7,16 +7,6 @@
 const IMG_PATH = 'https://it-crafts.github.io/lesson/img';
 const fetchApiData = async function(url, page = 'info') {
     const res = await fetch(url + page);
-    /* COMMENT 네트워크 레벨로 깊게 들어가면 끝도없고, 브라우저 엔진마다 동작이 조금씩 다를 수 있습니다
-    일단은 fetch() 프로미스가 resolve한 res 객체는 HTTP 리스폰스 그 자체를 바라보고 있는 API라고 보시면 되고 (아직 JS로 데이터는 리드되지 않은 상태)
-    res.json() 시점에 데이터를 실제로 긁어오기 시작해서, 로드+컨버팅이 동시에 일어난다고 보시면 됩니다
-    통신전문을 다 받은 시점에 로드를 시작하는 게 아니라, 전문이 들어옴과 동시에 리드를 시작합니다 (그래서 res.json()도 비동기)
-    이미지나 동영상 스트리밍 같은 경우에 유용하고, 일반 JSON API 통신에서는 큰 신경은 안 써도 됩니다 */
-    // [개념 확인 부탁] 
-    // 제가 라이브러리 사용하지 않고 순수 바닐라js로 http 통신을 한게 처음인데요.
-    // fetch()의 response로 새 promise객체를 반환하고, 그상태로는 데이터를 쓸 수 없어서
-    // json()함수를 실행해줘서 데이터를 사용할 수 있도록 변환한거라고 이해가되는데 맞는지 확인 부탁드립니다!(개념이 헷갈리네요..^^;;)
-    // 자세한 답변 감사합니다!! 동작하는 타이밍과 순서를 알게되니 훨씬 이해가 잘되네요. 재밌네요! 기회가 된다면 공부해보고 싶을정도로 재밌네요 감사합니다!!
     const data = await res.json();
     return data.data;
 }
@@ -100,41 +90,20 @@ page.insertAdjacentHTML('beforeend', `
         </div>
     </div>
 `);
-// article태그 DOM트리 탐색이 반복되므로, article 변수에 담아 객체 캐싱
 const article = page.querySelector('article');
-// [질문 1] 왜 빈 div를 생성해서 노드를 선택해주고 밀어넣는 방식으로 하는지 궁금합니다.
-/* COMMENT 어느 부분을 말씀하시는 지 모르겠습니다. 라인이나 메소드명을 명시해주세요. */
-// [질문 1-1] line 88번을 보고 질문을 했습니다! 아래의 질문2의 답변을 듣고나서 이해가 가는것 같긴 합니다만, 혹시 다른 이유일까봐 라인 넘버도 추가로 남겨봅니다:-)
-// [질문 2] 그리고 children[0] 이렇게 인덱스 번호로 선택하게 되면 나중에 중간에 예기치 못한
-// 태그가 추가되었을 경우 인덱스번호를 바꿔줘야할 것 같은데 인덱스 번호로 선택하신 이유가 궁금합니다!
-/* COMMENT 룩업에도 자원이 소요되기 때문에 각 컴포넌트의 배치순서는 하드코딩으로 잡았고, 조금 더 정확히 간다면 별도의 룩업작업을 하는 게 맞습니다
-후반주차에는 만들고 룩업을 해서 DOM객체를 잡는 게 아닌, 각 DOM객체를 만들어서 잡고 부모에 밀어넣는 형태로 리팩토링 됩니다 */
 let grid = article.children[0].firstElementChild;
 let loading = article.children[1].firstElementChild;
 let more = article.children[2].firstElementChild;
 let p = 1;
 
-// 전체적으로 반복되는 구간이고, await를 포함하는 함수이기 때문에 async 함수로 묶어줌
 async function setPage(){
     try{
-        /**
-        * 버튼 중복 클릭은 에러를 유발하기 때문에, 중복 클릭 방지를 위해 버튼 바로 숨김 처리
-        * -> fetch 로직 아래에 버튼을 숨김처리하면, fetch를 진행하는사이 클릭 여러번 가능하므로 사전에 막음
-        */
         more.parentElement.style.display = 'none';
         loading.parentElement.style.display = '';
         
         const timelineList = await fetchApiData(url, p++);
 
         const divide = function(list, size) {
-            // [질문 3] Array.prototype.slice()를 통해 얕은 복사를 실행하게 되면
-            // console.log()에 찍었을 때 배열안의 객체를 확인할 수가 없더라구요!
-            // console.log(JSON.strigify(copy)); 이렇게 찍어서 확인해봤는데..
-            // 멘토님은 얕은복사한 객체의 내용 확인하고 싶으시면 어떻게 하시나요??
-            /* COMMENT 얕은복사 여부와 관계없이, 애초에 console.log로는 배열 안의 객체는 확인할 수 없습니다 (펼쳐야 볼 수 있습니다)
-            참조형 변수나 배열 등의 엘리먼트는, 담고있는 참조형이 원본인지 얕은복사본인지 알지 못합니다. (동일하게 동작합니다)
-            참고로, 로그 찍어서 디버깅 하는 것 자체가 잘못된 개발습관입니다. 디버깅은 디버거로 하는 게 바람직하고, 개발속도도 월등히 빠릅니다. */
-            // 잘못된 디버깅 습관을 갖고 있었군요. 디버거가 다루기 어려워서 콘솔로 찍어버릇했는데, 이 기회에 제대로 습관들이겠습니다. 따끔한 조언 감사합니다.
             const copy = list.slice();
             const cnt = Math.floor(copy.length / size);
 
@@ -168,7 +137,6 @@ async function setPage(){
     }catch(e){
         console.error(e);
     }finally{            
-        /* TODO 마지막 페이지에서는 더보기 버튼 다시 노출되지 않도록 처리 해주세요 */
         if(totalPage == p - 1) { 
             more.parentElement.style.display = 'none';
             loading.parentElement.style.display = 'none';
@@ -181,12 +149,6 @@ async function setPage(){
 setPage();
 
 const clickMore = function(e) {
-    /* TODO 클릭을 한 번 더 받아야 이벤트가 떨어집니다. 마지막 페이지 로드시에 떨어지도록 해주세요. */
-    /**
-     * fetch 로직을 실행 할 때 마다 p를 증가 연산하고 있기 때문에 
-     * 클릭할때는 p의 번호가 늘 현재페이지 +1 이 된 상태이므로
-     * 현재 페이지를 가리 키기 위해 p-1일 때 이벤트 제거
-     *  */ 
     if(totalPage == p - 2){
         more.removeEventListener('click', clickMore);
         return;
