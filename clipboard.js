@@ -138,7 +138,10 @@ const timelineContent = (($parent) => {
 })(timeline.$el);
 
 const grid = await (async ($parent, url) => {
-    let $el;
+    let $el,
+        $popularSortBtn,
+        $latestSortBtn,
+        $searchInp;
 
     let page = 1;
     const ITEM_PER_ROW = 3;
@@ -147,6 +150,34 @@ const grid = await (async ($parent, url) => {
     const create = () => {
         render();
         $el = $parent.lastElementChild;
+
+        // dom 엘리먼트 변수명 선언
+        $latestSortBtn = $parent.querySelector('article').firstElementChild.children[0];
+        $popularSortBtn = $parent.querySelector('article').firstElementChild.children[1];
+        $searchInp = $parent.querySelector('article').firstElementChild.children[2].querySelector('input');
+
+        // sort 클릭이벤트 매핑
+        // 클래스명을 toggle로 주고, 클래스명 여부에 따라 함수에 적합한 파라미터 전달
+        $latestSortBtn.addEventListener('click', ()=>{
+            $el.classList.toggle('latest-sort');
+            if($el.classList.contains('latest-sort')){
+                sort('latest');
+            }else{
+                sort('oldest');
+            }
+        });
+
+        $popularSortBtn.addEventListener('click', ()=>{
+            $el.classList.toggle('popular-sort');
+            if($el.classList.contains('popular-sort')){
+                sort('popular');
+            }else{
+                sort('unpopular');
+            }
+        });
+
+        // keyup 이벤트 발생시 filter 함수 실행. 인풋의 값을 파라미터로 전달
+        $searchInp.addEventListener('keyup', () => filter($searchInp.value) );
     }
 
     const divide = (list, size) => {
@@ -159,26 +190,144 @@ const grid = await (async ($parent, url) => {
         }
 
         const lastlist = listList[listList.length - 1];
+        if(!lastlist) return;
         for(let i = lastlist.length; i < size; i++) {
             lastlist[i] = {};
         }
         
         return listList;
     };
-    const listList = divide(timelineList, ITEM_PER_ROW);
+    // 201라인의 listList 변수를 filter나 sort에서 고친 값으로 엎어치기 위해 const대신 let으로 변경
+    let listList = divide(timelineList, ITEM_PER_ROW);
 
-    const filter = () => {
+    // filterList: filter에서 걸러진 값을 담을 변수
+    let filterList = [];
+
+    const filter = (keyword) => {
         // TODO 검색창 input에 key이벤트 발생시 검색로직 수행
         $el.lastElementChild.firstElementChild.innerHTML = '';
-        divide(timelineList.filter(/* TODO */), ITEM_PER_ROW)
-            .forEach(list => {/* TODO */});
-    }
+        
+        
+        let filterResult = divide(timelineList.filter(i =>{
+            if(i.text.includes(keyword)){
+                return i;
+            }
+        }), ITEM_PER_ROW);
+        
+        if(filterResult == undefined) return;
+        filterList = [];
+        filterResult.forEach(list => {
+            filterList.push(list);
+        });
 
-    const sort = () => {
+        filterRefreshTrigger();
+        return {filterList};
+    }
+    
+    function filterRefreshTrigger(){
+        listList = filterList;
+        setRow(listList);
+    }
+    
+    let sortTargetList=[];
+    let sortList = [];
+    const sort = (sortKind) => {
+        // filter 검색한 결과에 sort를 적용할 경우
+        if(!!$searchInp.value){
+            let copy = [...filterList];
+    
+            sortTargetList=[];
+            copy.forEach(list => {
+                list.forEach(item => {
+                    sortTargetList.push(item);
+                });
+            });
+        }else{
+            sortTargetList = timelineList;
+        }
+
         // TODO 최신순/인기순 클릭시 해당 정렬로직 수행
+        let popularityOrderSort,
+            popularityDisorderSort,
+            latestSort,
+            ordestSort;
+
+        popularityOrderSort = (a, b) => {
+            num1 = Number.parseInt(a.clipCount) + Number.parseInt(a.commentCount);
+            num2 = Number.parseInt(b.clipCount) + Number.parseInt(b.commentCount);
+            
+            if(num1 > num2) return -1;
+            if(num1 < num2) return 1;
+            return 0;
+        }
+            
+        popularityDisorderSort = (a, b) => {
+            num1 = Number.parseInt(a.clipCount) + Number.parseInt(a.commentCount);
+            num2 = Number.parseInt(b.clipCount) + Number.parseInt(b.commentCount);
+
+            if(num1 > num2) return 1;
+            if(num1 < num2) return -1;
+            return 0;
+        }
+        
+        latestSort = (a, b) => {
+            var time1 = new Date(a.timestamp).getTime();
+            var time2 = new Date(b.timestamp).getTime();
+            if(time1 > time2){
+                return 1;
+            }
+            if(time1 < time2){
+                return -1;
+            }
+            return 0;
+        }
+
+        ordestSort = (a, b) => {
+            var time1 = new Date(a.timestamp).getTime();
+            var time2 = new Date(b.timestamp).getTime();
+            if(time1 > time2){
+                return -1;
+            }
+            if(time1 < time2){
+                return 1;
+            }
+            return 0;
+        }
+        
+        // 파라미터에 따라 필요한 sort 함수 mapping
+        let sortCase;
+        switch(sortKind){
+            case 'popular': 
+                sortCase = popularityOrderSort;
+                break;
+            case 'unpopular': 
+                sortCase = popularityDisorderSort;
+                break;
+            case 'latest':
+                sortCase = latestSort;
+                break;
+            case 'oldest':
+                sortCase = ordestSort;
+                break;
+        }
+
         $el.lastElementChild.firstElementChild.innerHTML = '';
-        divide(timelineList.sort(/* TODO */), ITEM_PER_ROW)
-            .forEach(list => {/* TODO */});
+
+        // 컨텐츠 들어갈 곳에 fetch data를 데이터 포맷팅해서 형식대로 넣기
+        sortList = [];
+        divide(sortTargetList.sort(sortCase), ITEM_PER_ROW)
+           .forEach(list => {
+            sortList.push(list);
+           });
+           
+        // 새로고침 트리거 실행
+        sortRefreshTrigger();
+        return {sortList};
+    }
+    
+    function sortRefreshTrigger(){
+        listList = sortList;
+        setRow(listList);
     }
 
     const render = () => {
@@ -217,45 +366,51 @@ const grid = await (async ($parent, url) => {
     }
 
     create();
+    
     return { $el, listList }
 })(timelineContent.$el.firstElementChild, timeline.url);
 
-grid.listList.forEach(list => {
-    const gridItem = (($parent, list) => {
-        let $el;
-
-        const create = () => {
-            render(list);
-            $el = $parent.lastElementChild;
-        }
-
-        const render = (list) => {
-            const html = list.reduce((html, data) => {
-                const img = (data.img || '') && `
-                    <a href="javascript:;">
-                        <div class="eLAPa">
-                            <div class="KL4Bh">
-                                <img class="FFVAD" decoding="auto" src="${common.IMG_PATH}${data.img}" style="object-fit: cover;">
-                            </div>
-                        </div>
-                    </a>
-                `;
-                html += `
-                    <div class="v1Nh3 kIKUG _bz0w">${img}</div>
-                `;
-                return html;
-            }, '');
-            
-            $parent.insertAdjacentHTML('beforeend', `
-                <div class="Nnq7C weEfm">
-                    ${html}
-                </div>
-            `);
-        }
+// list 그려주는 setRow 함수
+async function setRow(listList = grid.listList){
+    listList.forEach(list => {
+        const gridItem = (($parent, list) => {
+            let $el;
     
-        create();
-        return { $el }
-    })(grid.$el.lastElementChild.firstElementChild, list);
-});
+            const create = () => {
+                render(list);
+                $el = $parent.lastElementChild;
+            }
+    
+            const render = (list) => {
+                const html = list.reduce((html, data) => {
+                    const img = (data.img || '') && `
+                        <a href="javascript:;">
+                            <div class="eLAPa">
+                                <div class="KL4Bh">
+                                    <img class="FFVAD" decoding="auto" src="${common.IMG_PATH}${data.img}" style="object-fit: cover;">
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                    html += `
+                        <div class="v1Nh3 kIKUG _bz0w">${img}</div>
+                    `;
+                    return html;
+                }, '');
+                
+                $parent.insertAdjacentHTML('beforeend', `
+                    <div class="Nnq7C weEfm">
+                        ${html}
+                    </div>
+                `);
+            }
+        
+            create();
+            return { $el }
+        })(grid.$el.lastElementChild.firstElementChild, list);
+    });
+};
+setRow();
+    
 
 })();
