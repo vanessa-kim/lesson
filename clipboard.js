@@ -146,6 +146,9 @@ const grid = await (async ($parent, url) => {
     let page = 1;
     const ITEM_PER_ROW = 3;
     const timelineList = await common.fetchApiData(url, page++);
+    /* COMMENT 검색창 키워드를 저장하기 위한 상태변수 하나 추가 했습니다
+    $searchInp.value을 써야할 것 같은데, 각 메소드에서 직접접근은 바람직하지 않아서 추가했어여 */
+    let keyword = '';
 
     const create = () => {
         render();
@@ -171,12 +174,9 @@ const grid = await (async ($parent, url) => {
             let isLatest = true;
 
             return (e) => {
-                if(isLatest) {
-                    sort('oldest');
-                } else {
-                    sort('latest');
-                }
+                $el.lastElementChild.firstElementChild.innerHTML = '';
                 isLatest = !isLatest;
+                renderRows(divide(sort(isLatest ? 'latest' : 'oldest'), ITEM_PER_ROW));
             }
         })());
 
@@ -186,12 +186,9 @@ const grid = await (async ($parent, url) => {
             let isPopular = false;
 
             return (e) => {
-                if(isPopular) {
-                    sort('unpopular');
-                } else {
-                    sort('popular');
-                }
+                $el.lastElementChild.firstElementChild.innerHTML = '';
                 isPopular = !isPopular;
+                renderRows(divide(sort(isPopular ? 'popular' : 'unpopular'), ITEM_PER_ROW));
             }
         })());
 
@@ -199,7 +196,9 @@ const grid = await (async ($parent, url) => {
         // FIXME 리스너 제거 가능하도록 분리
         // keyup 이벤트 발생시 filter 함수 실행. 인풋의 값을 파라미터로 전달
         $searchInp.addEventListener('keyup', (e) => {
-            filter(e.currentTarget.value);
+            $el.lastElementChild.firstElementChild.innerHTML = '';
+            keyword = e.currentTarget.value; // 상태변수 뮤테이션
+            renderRows(divide(filter(), ITEM_PER_ROW));
         });
     }
 
@@ -225,18 +224,12 @@ const grid = await (async ($parent, url) => {
 
     // filterList: filter에서 걸러진 값을 담을 변수
     /* TODO 고려해야 할 리스트는, 원본리스트/템프리스트 두 개면 충분할 것 같습니다 */
-    let resultList = timelineList;
-
+    // COMMENT 리스트를 두 번 sort하지 않기 위해, filter/sort 함수를 정말로 필터링과 소팅만 하도록 역할을 한정 했습니다
     /* TODO 필터결과 판단하는 기존로직이 복잡해서, 간단하게 로직 리팩토링 했습니다
     특정한 데이터를 캐싱(여기서는 filterList를 캐싱)하는 로직은
     가공 전의 데이터를 기준으로 해주세요(divide함수 들어간 후에서, 전으로 변경)*/
-    const filter = (keyword) => {
-        $el.lastElementChild.firstElementChild.innerHTML = '';
-        
-        resultList = timelineList.filter(i => (i.text + i.name).includes(keyword));
-        renderRows(divide(resultList, ITEM_PER_ROW));
-
-        return { resultList };
+    const filter = () => {
+        return timelineList.filter(i => (i.text + i.name).includes(keyword));
     }
 
     /* TODO 정렬기준 판단하는 기존로직이 복잡해서, 적절한 패턴 활용해서 리팩토링 했습니다
@@ -244,7 +237,7 @@ const grid = await (async ($parent, url) => {
     더 견고하고 읽기 쉽고 확장하기 쉽게 바꿀 수도 있다는 점만 참고 해보세요~ */
     const comparator = (() => {
         const computePopularity = data => Number.parseInt(data.clipCount) + Number.parseInt(data.commentCount) * 2;
-        const parseTimeValue = data => new Date(data.timestamp).getTime();
+        const parseTimeValue = data => Date.parse(data.timestamp);
 
         return {
             popular: (a, b) => computePopularity(b) - computePopularity(a),
@@ -256,13 +249,8 @@ const grid = await (async ($parent, url) => {
     const sort = (sortKind) => {
         /* FIXME 소트로직에서 $searchInp.value에 직접 접근하는 것은 바람직하지 않습니다
         정렬여부에 따라 바라보고 있는 모수 리스트 자체를 바꾸도록 리팩토링 했습니다 */
-        $el.lastElementChild.firstElementChild.innerHTML = '';
-
         timelineList.sort(comparator[sortKind]);
-        resultList.sort(comparator[sortKind]);
-        renderRows(divide(resultList, ITEM_PER_ROW));
-
-        return { resultList };
+        return filter();
     }
     
     /* FIXME 함수가 함수 외부의 뮤터블한 값에 접근하는 것은 지양 해주세요 (페이지 같은 경우를 제외하고)
