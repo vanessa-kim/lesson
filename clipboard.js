@@ -176,7 +176,7 @@ const grid = await (async ($parent, url) => {
             return (e) => {
                 $el.lastElementChild.firstElementChild.innerHTML = '';
                 isLatest = !isLatest;
-                renderRows(divide(sort(isLatest ? 'latest' : 'oldest'), ITEM_PER_ROW));
+                refresh(sort(isLatest ? 'latest' : 'oldest'));
             }
         })());
 
@@ -188,7 +188,7 @@ const grid = await (async ($parent, url) => {
             return (e) => {
                 $el.lastElementChild.firstElementChild.innerHTML = '';
                 isPopular = !isPopular;
-                renderRows(divide(sort(isPopular ? 'popular' : 'unpopular'), ITEM_PER_ROW));
+                refresh(sort(isPopular ? 'popular' : 'unpopular'));
             }
         })());
 
@@ -198,8 +198,15 @@ const grid = await (async ($parent, url) => {
         $searchInp.addEventListener('keyup', (e) => {
             $el.lastElementChild.firstElementChild.innerHTML = '';
             keyword = e.currentTarget.value; // 상태변수 뮤테이션
-            renderRows(divide(filter(), ITEM_PER_ROW));
+            refresh(filter());
         });
+    }
+
+    /* FIXME 함수가 함수 외부의 뮤터블한 값에 접근하는 것은 지양 해주세요 (페이지 같은 경우를 제외하고)
+    아마 개발하실 때도 오래 걸리셨을 거고, 추후 유지보수 시에도 오래 걸립니다
+    영향범위를 한정하여 견고하게 동작할 수 있도록, 되도록 주요한 데이터는 파라미터로 직접 받아주세요 */
+    const refresh = (list) => {
+        renderRows(divide(list, ITEM_PER_ROW));
     }
 
     const divide = (list, size) => {
@@ -229,6 +236,9 @@ const grid = await (async ($parent, url) => {
     특정한 데이터를 캐싱(여기서는 filterList를 캐싱)하는 로직은
     가공 전의 데이터를 기준으로 해주세요(divide함수 들어간 후에서, 전으로 변경)*/
     const filter = () => {
+        if(!keyword) {
+            return timelineList;
+        }
         return timelineList.filter(i => (i.text + i.name).includes(keyword));
     }
 
@@ -253,13 +263,6 @@ const grid = await (async ($parent, url) => {
         return filter();
     }
     
-    /* FIXME 함수가 함수 외부의 뮤터블한 값에 접근하는 것은 지양 해주세요 (페이지 같은 경우를 제외하고)
-    아마 개발하실 때도 오래 걸리셨을 거고, 추후 유지보수 시에도 오래 걸립니다
-    영향범위를 한정하여 견고하게 동작할 수 있도록, 되도록 주요한 데이터는 파라미터로 직접 받아주세요
-    (refresh 함수 자체를 없애서, 최종코드 기준으로 주석처리 했습니다) */
-    // function refresh(resultList){
-    //     renderRows(resultList);
-    // }
 
     const render = () => {
         $parent.insertAdjacentHTML('beforeend', `
