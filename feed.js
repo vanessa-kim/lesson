@@ -172,12 +172,13 @@ const TimelineContent = ($parent, url = '', profileData = {}, totalPage = 1) => 
             entryList.forEach(async entry => {
                 if(!entry.isIntersecting) { return; }
                 await ajaxMore();
+                
                 if(page >= totalPage) {
                     observer.unobserve(entry.target);
                     $loading.style.display = 'none';
                 }
-            }); // rootMargin 미동작 (인스타그램에서 자체적으로 막아놓은 것 같기도 함)
-        });
+            });
+        }, {rootMargin: innerHeight + 'px' });
         io.observe($loading);
     }
 
@@ -207,6 +208,7 @@ const Feed = ($parent, profileData = {}, pageDataList = []) => {
 
     const create = () => {
         addFeedItems(profileData, pageDataList);
+        lazyLoad($elList);
     }
 
     const destroy = () => {
@@ -217,6 +219,36 @@ const Feed = ($parent, profileData = {}, pageDataList = []) => {
         const firstIndex = $parent.children.length;
         render(profileData, pageDataList);
         $elList.push(...[].slice.call($parent.children, firstIndex));
+    }
+
+    /**
+     * lazyLoad: feed의 img src와 data-src 속성을 교차해 화질을 바꿔주는 함수
+     * @param elList addFeedItems에서 추가한 노드 리스트
+     * */
+    const lazyLoad = (elList = []) => {
+        elList.forEach( item => {
+            const img = item.children[1].querySelector('img');
+            const imgAdress = {};
+            imgAdress['high'] = img.dataset.src;
+            imgAdress['low'] = img.src;
+
+            const io = new IntersectionObserver((entryList, observer) => {
+                    entryList.forEach( entry => {
+                        if(!entry.isIntersecting) {
+                            //대상 안보일 때: 흐린 그림 교체
+                            img.dataset.src = imgAdress.high;
+                            img.src = imgAdress.low;
+                        
+                            return;
+                        }
+
+                        //대상 보일 때: 선명한 그림 교체
+                        img.dataset.src = imgAdress.low;
+                        img.src = imgAdress.high;
+                    });
+                });
+            io.observe(item);
+        });
     }
 
     const render = (profileData, pageDataList) => {
