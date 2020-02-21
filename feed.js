@@ -3,6 +3,8 @@
  * All rights reserved. 무단전재 및 재배포 금지.
  * All contents cannot be copied without permission.
  */
+// COMMENT 왜 모듈형태에서 생성자로 변환한 것인지? 의도+장점이 궁금합니다.
+//         생성자로 만드는건 재사용성 때문이라고 알고 있었는데, 이 경우 모듈형태보다 나은점이나 이렇게 했을때의 장점이 잘 이해 되지 않습니다.
 const common = (() => {
     const IMG_PATH = 'https://it-crafts.github.io/lesson/img';
     const fetchApiData = async (url, page = 'info') => {
@@ -178,6 +180,7 @@ const TimelineContent = ($parent, url = '', profileData = {}, totalPage = 1) => 
                     $loading.style.display = 'none';
                 }
             });
+
         }, {rootMargin: innerHeight + 'px' });
         io.observe($loading);
     }
@@ -208,7 +211,6 @@ const Feed = ($parent, profileData = {}, pageDataList = []) => {
 
     const create = () => {
         addFeedItems(profileData, pageDataList);
-        lazyLoad($elList);
     }
 
     const destroy = () => {
@@ -218,33 +220,39 @@ const Feed = ($parent, profileData = {}, pageDataList = []) => {
     const addFeedItems = (profileData = {}, pageDataList = []) => {
         const firstIndex = $parent.children.length;
         render(profileData, pageDataList);
+        // XXX [].slice.call(args, 0) 이부분이 잘 이해가 안갑니다.
+        //     https://stackoverflow.com/questions/2125714/explanation-of-slice-call-in-javascript
+        //     스택오버플로우에서 설명을 찾았는데 이해가 될듯 말듯 잘 되지 않네요. ES6의 Array.from()과 같은 역할을 한다고 이해하면 되는 걸까요?
         $elList.push(...[].slice.call($parent.children, firstIndex));
+        lazyLoad($elList);
     }
 
     /**
      * lazyLoad: feed의 img src와 data-src 속성을 교차해 화질을 바꿔주는 함수
      * @param elList addFeedItems에서 추가한 노드 리스트
      * */
+    // BUG TimelineContent 생성자의 ajaxMore를 실행하고 난 뒤에, 11번째와 12번째의 노드의 img src와 data-src가 바뀌어버리는데
+    //     왜 그런지 모르겠어요. 23번째와 24번째 노드도 마찬가지입니다! 
+    //     fetch할 때 문제인지, 아님 lazyLoad 내부에 imgAdress를 초기화 해주지 않아서 그런건지 잘 모르겠습니다..ㅠ 못잡겠네요..!
     const lazyLoad = (elList = []) => {
         elList.forEach( item => {
             const img = item.children[1].querySelector('img');
-            const imgAdress = {};
-            imgAdress['high'] = img.dataset.src;
-            imgAdress['low'] = img.src;
+            const imgAdress = [];
+            imgAdress[0] = img.dataset.src;
+            imgAdress[1] = img.src;
 
             const io = new IntersectionObserver((entryList, observer) => {
                     entryList.forEach( entry => {
                         if(!entry.isIntersecting) {
                             //대상 안보일 때: 흐린 그림 교체
-                            img.dataset.src = imgAdress.high;
-                            img.src = imgAdress.low;
-                        
+                            img.dataset.src = imgAdress[0];
+                            img.src = imgAdress[1];
                             return;
                         }
 
                         //대상 보일 때: 선명한 그림 교체
-                        img.dataset.src = imgAdress.low;
-                        img.src = imgAdress.high;
+                        img.dataset.src = imgAdress[1];
+                        img.src = imgAdress[0];
                     });
                 });
             io.observe(item);
