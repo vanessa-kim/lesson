@@ -220,42 +220,61 @@ const Feed = ($parent, profileData = {}, pageDataList = []) => {
     const addFeedItems = (profileData = {}, pageDataList = []) => {
         const firstIndex = $parent.children.length;
         render(profileData, pageDataList);
-        // XXX [].slice.call(args, 0) 이부분이 잘 이해가 안갑니다.
+        // [].slice.call(args, 0) 이부분이 잘 이해가 안갑니다.
         //     https://stackoverflow.com/questions/2125714/explanation-of-slice-call-in-javascript
         //     스택오버플로우에서 설명을 찾았는데 이해가 될듯 말듯 잘 되지 않네요. ES6의 Array.from()과 같은 역할을 한다고 이해하면 되는 걸까요?
-        $elList.push(...[].slice.call($parent.children, firstIndex));
-        lazyLoad($elList);
+        // COMMENT 얕은복사가 목적인 것은 맞습니다, 다만 여기선 전체가 아닌 일부만 잘라서 복사하는 거라 완전히 같지는 않습니다 (firstIndex가 항상 0이 아닙니다)
+        const $elListAdded = [].slice.call($parent.children, firstIndex);
+        $elList.push(...$elListAdded);
+        /* BUG 매 번 전체 $elList 대상의 이미지 엘리먼트를 긁고 있기 때문에,
+        2페이지, 3페이지, ... addFeedItems 호출 시에 이전페이지 이미지들이 다시 옵저버에 등록됩니다
+        겸사겸사 delete lazyLoadImgs.dataset.src; 추가했으니, 내렸다가 다시 올려보세요
+        해법은 추가한 엘리먼트 대상으로 룩업을 하는 방법이 있을 것 같고 (push 하기 전에 미리 뽑아두고?)
+        아니면 data-src 속성을 기준으로 뽑을 수도 있을 것 같습니다 */
+        lazyLoad($elListAdded);
     }
 
     /**
      * lazyLoad: feed의 img src와 data-src 속성을 교차해 화질을 바꿔주는 함수
      * @param elList addFeedItems에서 추가한 노드 리스트
      * */
-    // BUG TimelineContent 생성자의 ajaxMore를 실행하고 난 뒤에, 11번째와 12번째의 노드의 img src와 data-src가 바뀌어버리는데
+    // TimelineContent 생성자의 ajaxMore를 실행하고 난 뒤에, 11번째와 12번째의 노드의 img src와 data-src가 바뀌어버리는데
     //     왜 그런지 모르겠어요. 23번째와 24번째 노드도 마찬가지입니다! 
     //     fetch할 때 문제인지, 아님 lazyLoad 내부에 imgAdress를 초기화 해주지 않아서 그런건지 잘 모르겠습니다..ㅠ 못잡겠네요..!
+    /* COMMENT $elListAdded 추가와 observer.unobserve, delete img.dataset.src를 통해 자연히 해결 되었습니다 */
     const lazyLoad = (elList = []) => {
         elList.forEach( item => {
-            const img = item.children[1].querySelector('img');
-            const imgAdress = [];
-            imgAdress[0] = img.dataset.src;
-            imgAdress[1] = img.src;
+            /* COMMENT 현재 로직에 가장 심플하고 정확한 선택자입니다 (잘 하셨어요)
+            img[data-src]로 하면 조금 더 견고해질 것 같아요! */
+            const img = item.querySelector('img[data-src]');
+            // const imgAdress = [];
+            // imgAdress[0] = img.dataset.src;
+            // imgAdress[1] = img.src;
 
+            /* FIXME 현재는 이미지수 만큼 어마어마하게 io객체가 생성되고 있습니다
+            로직상 Feed는 List를 담는 컴포넌트이기 때문에, 사실 io는 하나만 있으면 충분합니다
+            io 생성은 컴포넌트 레벨로 올리고, observe하는 로직만 반복되면 성능이 개선될 수 있을 것 같습니다 */
             const io = new IntersectionObserver((entryList, observer) => {
                     entryList.forEach( entry => {
                         if(!entry.isIntersecting) {
+                            /* TODO 혹시 하드웨어 가속 성능개선을 염두에 둔 설계인가요?
+                            일단 렌더링이 된 이상, 저화질이미지로 롤백해서 얻는 이점이 크진 않을 것 같습니다 */
                             //대상 안보일 때: 흐린 그림 교체
-                            img.dataset.src = imgAdress[0];
-                            img.src = imgAdress[1];
+                            // img.dataset.src = imgAdress[0];
+                            // img.src = imgAdress[1];
                             return;
                         }
 
                         //대상 보일 때: 선명한 그림 교체
-                        img.dataset.src = imgAdress[1];
-                        img.src = imgAdress[0];
+                        // img.dataset.src = imgAdress[1];
+                        img.src = img.dataset.src;
+                        delete img.dataset.src;
+
+                        // TODO 마찬가지로, 교체 이후엔 가시성체크를 해제해주면 좋을 것 같습니다
+                        observer.unobserve(entry.target);
                     });
                 });
-            io.observe(item);
+            io.observe(img);
         });
     }
 
