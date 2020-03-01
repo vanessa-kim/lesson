@@ -141,7 +141,7 @@ const ItemDetail = (() => {
 
     proto.addEvent = function() {
         this.$click = this.click.bind(this);
-        this.$more.addEventListener('click', this.$click);
+        this.$more.addEventListener('click', this.$click.bind(this));
     }
     proto.removeEvent = function() {
         this.$more.removeEventListener('click', this.$click);
@@ -183,21 +183,98 @@ const Item = (() => {
         this.$left = this.$el.querySelector('.js-left');
         this.$right = this.$el.querySelector('.js-right');
         this.$pagebar = this.$el.querySelector('.js-pagebar');
+        
+       
+        // slide와 pagination에 필요한 값들 (캐싱)
+        this.screenWidth = window.innerWidth;
+        this.originWidth = -window.innerWidth;
+        this.containerWidth;
+        this.listIndex = 1;
+        
+        this.showBtns();
+        this.addEvent();
     }
     const proto = Item.prototype;
 
     proto.create = function() {
+        // pagination 클릭 가능하도록 ui/ux 개선
+        this.$pagebar.style.zIndex = 1;
+        this.$pagebar.style.cursor = 'pointer';
+
+        // pagination 버튼에 index 추가
+        for(let i = 0; i < this.$pagebar.children.length; i++){
+            this.$pagebar.children[i].index = i;
+        }
     }
     proto.destroy = function() {
         this.$parent.removeChild(this.$el);
     }
-
-    proto.click = function() {
-        // TODO $left/$right 화살표 숨김/표시 (필요한 로직 추가)
-        // TODO this.$slider.style.transform = `translateX(${이동좌표}px)`;
-        // TODO $pagebar 이미지에 대응되는 엘리먼트로 XCodT 클래스 이동 (on 처리)
-        // TODO 가로사이즈는 innerWidth로 직접 잡거나, innerWidth를 캐싱해두고 사용
+    proto.addEvent = function(){
+        this.$el.addEventListener('click', this.click.bind(this));
     }
+    
+    proto.click = function(e) {
+        // 클릭 이벤트가 일어났을 때만 함수 내부에서 쓰이는 분류 함수 (click 함수에 종속되어 있음)
+        const comparator = (() => {
+            const previousAction = () => {
+                if(this.listIndex == 1) return;
+                
+                this.containerWidth = this.containerWidth + -this.originWidth;
+                this.listIndex--;
+                this.$slider.style.transform = `translateX(${this.containerWidth}px)`;
+            }
+            const nextAction = () => {
+                if(this.listIndex >= this.$sliderList.children.length) return;
+
+                this.containerWidth = this.originWidth * this.listIndex++;
+                this.$slider.style.transform = `translateX(${this.containerWidth}px)`;
+            }
+            const movement = () => {
+                this.containerWidth = this.originWidth * e.target.index;
+                this.listIndex = e.target.index + 1;
+                this.$slider.style.transform = `translateX(${this.containerWidth}px)`
+            }
+
+            return {
+                prev: previousAction,
+                next: nextAction,
+                move: movement,
+            }
+        })();
+        
+        // 클릭된 타겟이 left/right 버튼일 때 실행되는 로직
+        if(e.target.parentNode == this.$left || e.target.parentNode == this.$right) {
+            const selectedTarget = e.target.parentNode;
+            const moveLocation = (selectedTarget == this.$left ? 'prev' : 'next');
+            
+            comparator[moveLocation]();
+            this.showBtns();
+            return;
+        }
+
+        // 클릭된 타겟이 pagination 버튼일 때 실행되는 로직
+        if(e.target.parentNode == this.$pagebar){
+            comparator['move']();
+            this.addClass(e);
+            this.showBtns();
+            return;
+        }
+    }
+
+    // $pagebar 이미지에 대응되는 엘리먼트로 pagination에 on 처리 (XCodT 클래스 추가)
+    proto.addClass = function(e) {
+        for(let i = 0; i < e.target.parentNode.children.length; i++) {
+            e.target.parentNode.children[i].classList.remove('XCodT');
+        }
+        e.target.classList.add('XCodT');
+    }
+
+    // 화살표 버튼 숨김/표시
+    proto.showBtns = function() {
+        (this.listIndex != 1 ? this.$left.style.display = 'block': this.$left.style.display = 'none');
+        (this.listIndex != this.$sliderList.children.length ? this.$right.style.display = 'block': this.$right.style.display = 'none');
+    }
+
     proto.resize = function() {
         // HACK 현재 데이터바인딩을 지원하지 않으므로, 리스트 모든 엘리먼트 지우고 새로 렌더링
         while(this.$sliderList.firstChild) {
