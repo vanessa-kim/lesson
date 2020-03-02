@@ -190,6 +190,10 @@ const Item = (() => {
         this.originWidth = -window.innerWidth;
         this.containerWidth;
         this.listIndex = 1;
+
+        // resize 이벤트 구현을 위해 필요한 값들 (캐싱)
+        this.resizeScreenWidth;
+        this.resizeTimer;
         
         this.showBtns();
         this.addEvent();
@@ -211,6 +215,17 @@ const Item = (() => {
     }
     proto.addEvent = function(){
         this.$el.addEventListener('click', this.click.bind(this));
+
+        // resize 이벤트를 호출할 때, 성능 개선을 위한 쓰로틀링 적용
+        window.addEventListener('resize', (e) => {
+            if(!this.resizeTimer){
+                this.resizeTimer = setTimeout(()=>{
+                    this.resizeTimer = null;
+                    this.resizeScreenWidth = window.innerWidth;
+                    this.resize();
+                }, 300);
+            }
+        }, false);
     }
     
     proto.click = function(e) {
@@ -274,7 +289,7 @@ const Item = (() => {
         (this.listIndex != 1 ? this.$left.style.display = 'block': this.$left.style.display = 'none');
         (this.listIndex != this.$sliderList.children.length ? this.$right.style.display = 'block': this.$right.style.display = 'none');
     }
-
+    
     proto.resize = function() {
         // HACK 현재 데이터바인딩을 지원하지 않으므로, 리스트 모든 엘리먼트 지우고 새로 렌더링
         while(this.$sliderList.firstChild) {
@@ -283,8 +298,8 @@ const Item = (() => {
         this.$sliderList.insertAdjacentHTML('beforeend', `
             ${this.htmlSliderImgs(this._dataList)}
         `);
-        // TODO 리프레시 전 슬라이드 이미지 다시 노출 (좌표보정)
-        // TODO 가로사이즈는 innerWidth로 직접 잡거나, innerWidth를 캐싱해두고 사용
+        // TODO 리프레시 전 슬라이드 이미지 다시 노출 (좌표보정) 
+        //      -> 의미를 이해 못함 (이미 구현해놓으신 코드가 지우고 다시 그리는 것 아닌가요? 뭘 다시 노출하는건지 잘 모르겠어요!)
     }
 
     proto.htmlSliderImgs = function(imgDataList) {
