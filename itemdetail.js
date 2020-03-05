@@ -3,6 +3,15 @@
  * All rights reserved. 무단전재 및 재배포 금지.
  * All contents cannot be copied without permission.
  */
+
+/**
+ * 프로토 타입 사용 이유
+ * 프로토타입을 이용하면 객체와 객체를 연결하고 한쪽 방향으로 상속을 받는 형태를 만들 수가 있다. 
+ * 자바스크립트에서 객체와 객체를 연결해서 상속 받는다는 것은 다른 말로 객체와 객체를 연결해 
+ * 멤버 함수나 멤버 변수를 공유 한다는 뜻이다. 
+ * 이런 점을 이용해 자바스크립트에서는 상속과 비슷한 효과를 얻는 것이다.
+ * https://meetup.toast.com/posts/104
+ */
 const common = (function() {
     const IMG_PATH = 'https://it-crafts.github.io/lesson/img';
     const fetchApiData = async (url, page = 'info') => {
@@ -40,6 +49,8 @@ const PageTurner = (() => {
     }
     const proto = PageTurner.prototype;
 
+    // 콜백함수 좋은 예제: API 통신 외에도, 생성 함수에서 시간이 걸린다면 async await 사용
+    // 간단한 show/hide 기능도 세분화된 함수로 나누어 구현 -> 직관적 함수명 -> 코드 이해력 증가, 유지보수 용이
     proto.more = async function(ajaxMore) {
         this.beforeMore();
         const hasNext = await ajaxMore();
@@ -63,6 +74,10 @@ const AutoPageTurner = (() => {
     const AutoPageTurner = function($loading, $more) {
         PageTurner.call(this, $loading, $more);
     }
+    // __proto__를 이용해서 프로토타입 체인을 형성하는 것은 안티패턴 -> 개발자가 직접 __proto__에 접근해서는 안된다
+    // Object.create() api를 사용해서 __proto__가 PageTurner를 참조하는 새로운 빈 객체를 리턴한다.
+    // AutoPageTurner는 PageTurner가 가진 prototype을 사용할 수도 있고, 본인이 가진 새로운 메서드도 덧붙여 사용할 수 있다.
+
     AutoPageTurner.prototype = Object.create(PageTurner.prototype);
     AutoPageTurner.prototype.constructor = AutoPageTurner;
     const proto = AutoPageTurner.prototype;
@@ -70,6 +85,8 @@ const AutoPageTurner = (() => {
     // PageTurner의 more 메소드가 오버라이드 됨
     proto.more = function(ajaxMore) {
         this.beforeMore();
+        // Intersection Observer API 의 IntersectionObserver 인터페이스
+        // 대상 요소와 그 상위 요소 혹은 최상위 도큐먼트인 viewport와의 교차 영역에 대한 변화를 비동기적으로 감지할 수 있도록 도와준다.
         const io = new IntersectionObserver((entryList, observer) => {
             entryList.forEach(async entry => {
                 if(!entry.isIntersecting) {
@@ -77,6 +94,7 @@ const AutoPageTurner = (() => {
                 }
                 const hasNext = await ajaxMore();
                 if(!hasNext) {
+                    // Observer.unobserve() 실행하게되면 대상 감시를 중지한다.
                     observer.unobserve(entry.target);
                     this.afterMore(hasNext);
                 }
@@ -129,6 +147,11 @@ const ItemDetail = (() => {
         const listener = e.target.dataset.listener;
         if(listener === 'infinite') {
             // 런타임 부모 강제변경 - 이런 행위는 JS에서만 가능하며, 바람직하진 않으나 강력하다
+            /**
+             * Object.setPrototypeOf(arg1, arg2) : 주어진 객체의 Prototype을 변경할 수 있게하는 ES6 메서드
+             * @param arg1 : Prototype이 변경되어야하는 객체
+             * @param arg2 : 첫 번째 파라미터의 Prototype이 되는 대상 객체
+             */
             Object.setPrototypeOf(this._pageTurner, AutoPageTurner.prototype);
         }
 
@@ -149,6 +172,11 @@ const ItemDetail = (() => {
 
     proto.fetch = async function() {
         const detailData = await common.fetchApiData(URL, 1);
+        /**
+         * Object.assign() 메소드: 대상 객체에 다른 객체의 속성을 복사할 때 사용한다. 대상 객체를 반환한다. 
+         * 주로 얕은 복사를 할 때 사용한다. 객체안의 객체인 경우 겉 껍데기만 복사하고 내용물은 공유되기에 깊은 복사에는 적합하지 않다.
+         * 깊은 복사를 원한다면 const copy = JSON.parse(JSON.stringify(obj)); 
+         */
         Object.assign(this._data, detailData);
         return detailData;
     }
@@ -435,7 +463,9 @@ const Detail = (() => {
     }
 
     proto.addImg = function() {
+        // ** Promise 생성 참고할 것 ** 
         return new Promise(resolve => {
+            // shift() 메서드는 배열에서 첫 번째 요소를 제거하고, 제거된 요소를 반환한다. 이 메서드는 배열의 길이를 변하게 한다.
             const detailData = this._dataListTemp.shift();
             if(!detailData) {
                 resolve({ hasNext: false });
@@ -447,6 +477,7 @@ const Detail = (() => {
             this._dataList.push(detailData);
 
             $el.querySelector('img').onload = (e) => {
+                // Vue의 $nextTick과 비슷한 동작
                 resolve({ hasNext: this._dataListTemp.length > 0 });
             }
         });
